@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="./index.css">
+    </head>
+    
+    <!-- Title -->
+    <div style="text-align: center;">Q - Employer Version</div>
+
+    <!-- 1st Page: Login -->
+    <div id="first_page" style="text-align: center">
+        <p></p>
+        <div>Username <input id="username"></input></div>
+        <div>Password <input id="password"></input></div>
+        <button id="login"> Login </button>
+    </div>
+
+    <!-- 2nd Page: List of Career Fairs -->
+    <div id="second_page">
+        <button id="back_1"> Back </button>
+
+        <div id="fairs" style="text-align: center">
+            <div>
+                <div style="display: inline-block;">UW CSE Established Fair</div>
+                <button id="select_fair">select</button>
+            </div>
+            <div>
+                <div style="display: inline-block;">UW CSE Startup Fair</div>
+                <button>select</button>
+            </div>
+            <div>
+                <div style="display: inline-block;">UW Engineering Fair</div>
+                <button>select</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3rd Page: One Career Fair's Info -->
+    <div id="third_page">
+        <button id="back_2"> Back </button>
+
+        <div id="fair_info" style="text-align: center">
+            <div>UW CSE Established Fair</div>
+            <div>Location: HUB South Ballroom</div>
+            <div>Date: 10/11/2020</div>
+            <div>Time: 10:30 - 16:30</div>
+            <button id="add_queue">Add My Queue</button>
+        </div>
+    </div>
+
+    <script src="./index.js"></script>
+</html>
