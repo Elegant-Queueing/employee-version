@@ -68,11 +68,43 @@ document.getElementById("edit_employee_profile").onclick = function() {
     document.getElementById("employee_profile").style.display = "none";
 }
 // Submit profile changes
-document.getElementById("submit-employee-profile").onclick = function() {
+document.getElementById("submit_employee_profile").onclick = function() {
     document.getElementById("editing_profile").style.display = "none";
     document.getElementById("employee_profile").style.display = "block";
 }
 
+
+
+// View career fairs history
+document.getElementById("view_history").onclick = function() {
+    document.getElementById("fairs_history_page").style.display = "block";
+    document.getElementById("employee_profile_page").style.display = "none";
+}
+// Back to employee_profile
+document.getElementById("back_to_profile").onclick = function() {
+    document.getElementById("fairs_history_page").style.display = "none";
+    document.getElementById("employee_profile_page").style.display = "block";
+}
+// View one career fair history
+document.getElementById("select_fair_history").onclick = function() {
+    document.getElementById("student_history_page").style.display = "block";
+    document.getElementById("fairs_history_page").style.display = "none";
+}
+// Back to employee_profile
+document.getElementById("back_to_fair_history").onclick = function() {
+    document.getElementById("student_history_page").style.display = "none";
+    document.getElementById("fairs_history_page").style.display = "block";
+}
+// View one student history
+document.getElementById("student_history_profile").onclick = function() {
+    document.getElementById("student_history_profile_page").style.display = "block";
+    document.getElementById("student_history_page").style.display = "none";
+}
+// Back to employee_profile
+document.getElementById("back_to_student_history").onclick = function() {
+    document.getElementById("student_history_profile_page").style.display = "none";
+    document.getElementById("student_history_page").style.display = "block";
+}
 
 // Remove student
 document.getElementById("skip_student_1").onclick = function() {

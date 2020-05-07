@@ -10,6 +10,7 @@
     <!-- 1st Page: Login -->
     <div id="login_page" style="text-align: center">
         <p></p>
+        <p>Login Page</p>
         <div>Username <input id="username"></input></div>
         <div>Password <input id="password"></input></div>
         <button id="login"> Login </button>
@@ -21,6 +22,7 @@
         <button id="employee_profile_button"> Profile </button>
         
         <div id="fairs" style="text-align: center">
+            <p>List of Career Fairs Page</p>
             <div>
                 <div style="display: inline-block;">UW CSE Established Fair</div>
                 <button id="select_fair">select</button>
@@ -41,23 +43,100 @@
         <button id="back_to_fairs_e"> Back </button>
 
         <div id="employee_profile" style="text-align: center">
+            <p>Employee Profile Page</p>
             <img>
             <div id="employee_name">Name: </div>
             <div id="employee_company">Company: </div>
             <div id="employee_position">Position: </div>
             <div id="employee_position">Bio: </div>
             <button id="edit_employee_profile"> Edit Profile </button>
+            <button id="view_history"> View Career Fair History </button>
         </div>  
         
         <div id="editing_profile" style="text-align: center">
-            <img>
+            <p>Editing Profile Page</p>
             <div>Name: <input id="username"></input></div>
             <div>Company: <input id="password"></input></div>
             <div>Position: <input id="password"></input></div>
             <div>Bio: <input id="password"></input></div>
-            <button id="submit-employee-profile"> Submit Changes </button>
+            <button id="submit_employee_profile"> Submit Changes </button>
         </div>
 
+    </div>
+
+    <!-- Career Fairs History -->
+    <div id="fairs_history_page">
+        <button id="back_to_profile"> Back </button>
+        
+        <div id="fairs_history" style="text-align: center">
+            <p>Career Fairs History Page</p>
+            <div>
+                <div style="display: inline-block;">UW CSE Established Fair</div>
+                <button id="select_fair_history">select</button>
+            </div>
+            <div>
+                <div style="display: inline-block;">UW CSE Startup Fair</div>
+                <button>select</button>
+            </div>
+            <div>
+                <div style="display: inline-block;">UW Engineering Fair</div>
+                <button>select</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- List of Student History -->
+    <div id="student_history_page">
+        <button id="back_to_fair_history"> Back </button>
+
+        <div id="fair_history_info" style="text-align: center">
+            <p>Career Fair History</p>
+            <div>UW CSE Established Fair</div>
+            <div>Location: HUB South Ballroom</div>
+            <div>Date: 10/11/2020</div>
+            <div>Time: 10:30 - 16:30</div>
+        </div>
+
+        <div id="student_history" style="text-align: center;">
+            <p>Students</p>
+            <div id="student_history_1"> 
+                <div style="display: inline-block;">Alex Zhang</div>
+                <div style="display: inline-block;"> Tags: A, B, C</div>
+                <button id="student_history_profile" style="display: inline-block;">Profile</button>
+            </div>
+
+            <div id="student_history_2">
+                <div style="display: inline-block;">Alex Zhang</div>
+                <div style="display: inline-block;"> Tags: A, B, C</div>
+                <button style="display: inline-block;">Profile</button>
+            </div>
+
+            <div id="student_history_3"> 
+                <div style="display: inline-block;">Alex Zhang</div>
+                <div style="display: inline-block;"> Tags: A, B, C</div>
+                <button style="display: inline-block;">Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student History Profile Page -->
+    <div id="student_history_profile_page">
+        <button id="back_to_student_history"> Back </button>
+
+        <div style="text-align: center;"> Student Info </div>
+        <div id="student_history_info" style="text-align: center;">
+            <img>
+            <div>Name: Alex Zhang</div>
+            <div>University: Univeristy of Washington</div>
+            <div>Major: Computer Science</div>
+            <div>Graduation Date: Spring 2020</div>
+        </div>
+
+        <p></p>
+        <div style="text-align: center;">
+            Tags: Excellent, Considering, Unqualified
+        </div>
+        
     </div>
 
     <!-- 3rd Page: One Career Fair's Info -->
@@ -65,6 +144,7 @@
         <button id="back_to_fairs"> Back </button>
 
         <div id="fair_info" style="text-align: center">
+            <p>Career Fair Info Page</p>
             <div>UW CSE Established Fair</div>
             <div>Location: HUB South Ballroom</div>
             <div>Date: 10/11/2020</div>
@@ -78,35 +158,29 @@
         <p></p>
         <div> My Queue </div>
         <div id="student_1"> Student: 
-            <img>
             <div style="display: inline-block;">Alex Zhang</div>
             
             <button id="student_profile_1" style="display: inline-block;">Profile</button>
             <button id="skip_student_1" style="display: inline-block;">Skip</button>
-            <button id="remove_student_1" style="display: inline-block;">Remove</button>
+            <button id="remove_student_1" style="display: inline-block;">Done Talking</button>
         </div>
 
         <div id="student_2"> Student: 
-            <img>
             <div style="display: inline-block;">Alex Zhang</div>
             
             <button id="student_profile_2" style="display: inline-block;">Profile</button>
-            <button id="skip_student_2" style="display: inline-block;">Skip</button>
-            <button id="remove_student_2" style="display: inline-block;">Remove</button>
         </div>
 
         <div id="student_3"> Student: 
-            <img>
             <div style="display: inline-block;">Alex Zhang</div>
             
             <button id="student_profile_3" style="display: inline-block;">Profile</button>
-            <button id="skip_student_3" style="display: inline-block;">Skip</button>
-            <button id="remove_student_3" style="display: inline-block;">Remove</button>
         </div>
 
         <button id="stop_queue">Stop My Queue</button>
     </div>
 
+    <!-- Student Profile Page -->
     <div id="student_profile_page">
         <button id="back_to_queue"> Back </button>
 
