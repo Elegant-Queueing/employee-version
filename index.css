@@ -1,7 +1,23 @@
-#second_page {
+#list_of_fairs_page {
     display: none;
 }
 
-#third_page {
+#fair_info_page {
+    display: none;
+}
+
+#employee_profile_page {
+    display: none;
+}
+
+#editing_profile {
+    display: none;
+}
+
+#queue_page {
+    display: none;
+}
+
+#student_profile_page {
     display: none;
 }
