@@ -1,13 +1,58 @@
+var connect = new Connection();
+var employeeId = "";
+var listOfFairs = [];
+var fairs;
+
 // Transition from login page to list_of_fairs page
 document.getElementById("login").onclick = function() {
-    document.getElementById("login_page").style.display = "none";
-    document.getElementById("list_of_fairs_page").style.display = "block";
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
+    var result = connect.login(username, password)
+    if (result["authenticated"]) {
+        document.getElementById("login_page").style.display = "none";
+        document.getElementById("list_of_fairs_page").style.display = "block";
+        employeeId = result["employeeId"];
+    } else {
+        alert("Login Failed.");
+    }
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+
+    // Get and Show Fairs
+    listOfFairs = connect.getFairs(employeeId);
+    var innerListOfFairs = "";
+    for (i = 0; i < listOfFairs.length; i++) {
+        var fairName = listOfFairs[i]["name"];
+        innerListOfFairs +=
+            "<div>" +
+                "<div style=\"display: inline-block;\">" + fairName + " " + "</div>" +
+                "<button onclick=\"showFairInfo('" + fairName + "');\">select</button>" +
+            "</div>";
+    }
+    document.getElementById("fairs").innerHTML = innerListOfFairs;
 }
 
 // Transition from list_of_fairs page to fair_info page
-document.getElementById("select_fair").onclick = function() {
+function showFairInfo(fairName) {
     document.getElementById("list_of_fairs_page").style.display = "none";
     document.getElementById("fair_info_page").style.display = "block";
+
+    var fair;
+    for (j = 0; j < listOfFairs.length; j++) {
+        if (listOfFairs[j]["name"] === fairName) {
+            fair = listOfFairs[j];
+        }
+    }
+
+    var startTime = new Date(fair["start_time"]);
+    var endTime = new Date(fair["end_time"]);
+    document.getElementById("fair_info").innerHTML = 
+        "<div>" + fairName + "</div>" +
+        "<div>Location: " + fair["location"] + "</div>" +
+        "<div>Start Time: " + startTime + "</div>" +
+        "<div>End Time: " + endTime + "</div>" +
+        "<div>Description: " + fair["desc"] + "</div>";
 }
 
 // Transition from list_of_fairs page to employee profile page
