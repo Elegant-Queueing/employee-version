@@ -1,44 +1,61 @@
+var domain = "http://ec2-54-201-238-164.us-west-2.compute.amazonaws.com:8080";
+
 class Connection {
+
     login(username, password) {
-        // TODO: Connect to backend
-        return { "authenticated":true, "employeeId":"id" };
-    }
+        // Test: codealot@code.com
 
-    getFairs(employeeId) {
-        // TODO: Connect to backend
-        return [
-            {"name":"UW CSE Fair",
-             "location":"HUB South Ballroom",
-             "start_time":124521515,
-             "end_time":124124667,
-             "university":"University of Washington",
-             "desc":"Hosted by UW CSE",
-             "fairId":"abc1"
-            },
-            {"name":"UW Established Company Fair",
-             "location":"HUB South Ballroom",
-             "start_time":124521515,
-             "end_time":124124667,
-             "university":"University of Washington",
-             "desc":"Hosted by UW CSE Established Companies",
-             "fairId":"abc123"
+        var url = domain + "/employee/get/email/" + username;
+        return $.ajax({
+            url: url,
+            type: "GET", 
+            crossDomain: true,
+            success: function(result) {
+                
             }
-        ]
+        });
     }
 
-    addMyQueue(employeeId, fairId) {
-        return { "created":true };
+    getFairs() {
+        var url = domain + "/fair/get-all";
+        return $.ajax({url: url, type: "GET", success: function(result) {
+            return result;
+        }});
+    }
+
+    checkQueueIsOpen(employeeId) {
+        var url = domain + "/queue/data/is-open/employee-id/" + employeeId;
+        return $.ajax({
+            url: url, 
+            type: "GET",
+            success: function(result) {
+
+            },
+            error: function(response) {
+                console.log(response);
+            }
+        });
+    }
+
+    addMyQueue(employeeId, companyId, role) {
+        var url = domain + "/queue/add/company-id/" + companyId + "/employee-id/" + employeeId + "/role/" + role + "/";
+        return $.ajax({
+            url: url, 
+            type: "POST",
+            success: function(result) {
+
+            },
+            error: function(response) {
+                console.log(response);
+            }
+        });
     }
 
     getEmployeeProfile(employeeId) {
-        return {
-            "name":"Alex",
-            "company":"Amazon",
-            "position":"SDE 1",
-            "bio":"Hello World",
-            "img":"profile.png",
-            "email":"abc123@gmail.com"
-       }
+        var url = domain + "/employee/get/employee-id/" + employeeId;
+        return $.ajax({url: url, type: "GET", success: function(result) {
+            return result;
+        }});
     }
 
     updateEmployeeProfile(employeeId, name, email, bio) {
@@ -80,35 +97,59 @@ class Connection {
     }
 
     getStudentProfile(studentId) {
-        return {
-            "name":"Alex Zhang",
-            "img":"profile.png",
-            "university":"University of Washington",
-            "major":"CSE",
-            "graduationDate":20551151515,
-            "resume":"Resume"
-       }
+        var url = domain + "/student/get/student-id/" + studentId;
+        return $.ajax({
+            url: url,
+            type: "GET", 
+            success: function(result) {
+                return result;
+            },
+            error : function(response) {
+                console.log(response);
+            }
+        });
     }
 
     getMyStudents(employeeId) {
-        return [
-            {
-                "name":"Alex Zhang",
-                "studentId":"student1"
+        var url = domain + "/queue/data/employee-id/" + employeeId;
+        return $.ajax({
+            url: url,
+            type: "GET",
+            success: function(result) {
+                return result;
             },
-            {
-                "name":"Alex Z",
-                "studentId":"student2"
+            error : function(response) {
+                console.log(response);
             }
-        ]
+        });
     }
 
     skipStudent(studentId, employeeId) {
-        return { "skipped":true }
+        var url = domain + "/queue/remove-student/employee-id/" + employeeId + "/student-id/" + studentId;
+        return $.ajax({
+            url: url, 
+            type: "DELETE", 
+            success: function(result) {
+                return result;
+            },
+            error : function(response) {
+                console.log(response);
+            }
+        });
     }
 
     registerStudent(employeeId, studentId, fairId, tags) {
-        return { "registered":true }
+        var url = domain + "/queue/register-student/employee-id/" + employeeId + "/student-id/" + studentId;
+        return $.ajax({
+            url: url, 
+            type: "POST", 
+            success: function(result) {
+                return result;
+            },
+            error : function(response) {
+                console.log(response);
+            }
+        });
     }
 
     getTags(employeeId) {
@@ -116,6 +157,17 @@ class Connection {
     }
 
     stopMyQueue(employeeId) {
-        return { "stopped":true }
+        var url = domain + "/queue/status/employee-id/" + employeeId;
+        return $.ajax({
+            url: url,
+            type: "PUT", 
+            crossDomain: true,
+            success: function(result) {
+                return result;
+            },
+            error : function(response) {
+                console.log(response);
+            }
+        });
     }
 }

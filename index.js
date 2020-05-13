@@ -2,7 +2,7 @@ var connect = new Connection();
 var employeeId = "";
 var listOfFairs = [];
 var fairs;
-var fairId;
+// var fairId;
 var employeeInfo;
 var listOfFairsHistory = [];
 var listOfStudentsHistory = [];
@@ -18,29 +18,35 @@ document.getElementById("login").onclick = function() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
 
-    var result = connect.login(username, password);
-    if (result["authenticated"]) {
-        document.getElementById("login_page").style.display = "none";
-        document.getElementById("list_of_fairs_page").style.display = "block";
-        employeeId = result["employeeId"];
-    } else {
-        alert("Login Failed.");
-    }
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
+    connect.login(username, password).then(function(r) {
+        employeeInfo = r.employee;
+        if (employeeInfo != null) {
+            document.getElementById("login_page").style.display = "none";
+            document.getElementById("list_of_fairs_page").style.display = "block";
+            employeeId = employeeInfo["employee_id"];
+        } else {
+            alert("Login Failed.");
+        }
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
 
-    // Get and Show Fairs
-    listOfFairs = connect.getFairs(employeeId);
-    var innerListOfFairs = "";
-    for (i = 0; i < listOfFairs.length; i++) {
-        var fairName = listOfFairs[i]["name"];
-        innerListOfFairs +=
-            "<div>" +
-                "<div style=\"display: inline-block;\">" + fairName + " " + "</div>" +
-                "<button onclick=\"showFairInfo('" + fairName + "');\">select</button>" +
-            "</div>";
-    }
-    document.getElementById("fairs").innerHTML = innerListOfFairs;
+        // Get and Show Fairs
+        connect.getFairs().then(function(result) {
+            listOfFairs = result.fairs;
+            if (listOfFairs != null) {
+                var innerListOfFairs = "";
+                for (i = 0; i < listOfFairs.length; i++) {
+                    var fairName = listOfFairs[i]["name"];
+                    innerListOfFairs +=
+                        "<div>" +
+                            "<div style=\"display: inline-block;\">" + fairName + " " + "</div>" +
+                            "<button onclick=\"showFairInfo('" + fairName + "');\">select</button>" +
+                        "</div>";
+                }
+                document.getElementById("fairs").innerHTML = innerListOfFairs;
+            }
+        });
+    });
 }
 
 // Transition from list_of_fairs page to fair_info page
@@ -55,15 +61,15 @@ function showFairInfo(fairName) {
         }
     }
 
-    var startTime = new Date(fair["start_time"]);
-    var endTime = new Date(fair["end_time"]);
+    var startTime = new Date(fair["start_time"]["seconds"] * 1000);
+    var endTime = new Date(fair["end_time"]["seconds"] * 1000);
     document.getElementById("fair_info").innerHTML = 
         "<div>" + fairName + "</div>" +
-        "<div>Location: " + fair["location"] + "</div>" +
+        "<div>Location: " + fair["university_id"] + "</div>" +
         "<div>Start Time: " + startTime + "</div>" +
         "<div>End Time: " + endTime + "</div>" +
-        "<div>Description: " + fair["desc"] + "</div>";
-    fairId = fair["fairId"];
+        "<div>Description: " + fair["description"] + "</div>";
+    // fairId = fair["fairId"];
 }
 
 // Transition from list_of_fairs page to employee profile page
@@ -71,56 +77,72 @@ document.getElementById("employee_profile_button").onclick = function() {
     document.getElementById("list_of_fairs_page").style.display = "none";
     document.getElementById("employee_profile_page").style.display = "block";
 
-    employeeInfo = connect.getEmployeeProfile(employeeId);
-
-    document.getElementById("employee_info").innerHTML = 
-        "<div>Image: " + employeeInfo["img"] + "</div>" +
-        "<div>Name: " + employeeInfo["name"] + "</div>" +
-        "<div>Company: " + employeeInfo["company"] + "</div>" +
-        "<div>Position: " + employeeInfo["position"] + "</div>" +
-        "<div>Email: " + employeeInfo["email"] + "</div>" +
-        "<div>Bio: " + employeeInfo["bio"] + "</div>";
+    if (employeeInfo != null) {
+        document.getElementById("employee_info").innerHTML = 
+            "<div>Name: " + employeeInfo["name"] + "</div>" +
+            "<div>Company: " + employeeInfo["company_id"] + "</div>" +
+            "<div>Role: " + employeeInfo["role"] + "</div>" +
+            "<div>Email: " + employeeInfo["email"] + "</div>" +
+            "<div>Bio: " + employeeInfo["bio"] + "</div>";
+    }
 }
 
 // Transition from fair_info page to queue info page
 document.getElementById("add_queue").onclick = function() {
-    var result = connect.addMyQueue(employeeId, fairId);
-
-    if (result["created"]) {
-        document.getElementById("fair_info_page").style.display = "none";
-        document.getElementById("queue_page").style.display = "block";
-    }
-
-    updateQueue();
-    update = setInterval(updateQueue, 5000);
+    connect.checkQueueIsOpen(employeeId).then(function(result) {
+        console.log(result);
+        if (!result) {
+            console.log("adding queue");
+            connect.addMyQueue(employeeId, employeeInfo["company_id"], employeeInfo["role"]).then(function(result) {
+                console.log(result);
+                if (result != null) {
+                    document.getElementById("fair_info_page").style.display = "none";
+                    document.getElementById("queue_page").style.display = "block";
+                }
+            
+                updateQueue();
+                update = setInterval(updateQueue, 5000);
+            });
+        } else {
+            document.getElementById("fair_info_page").style.display = "none";
+            document.getElementById("queue_page").style.display = "block";
+            updateQueue();
+            update = setInterval(updateQueue, 5000);
+        }
+    });
 }
 
 function updateQueue() {
     if (notOperatingQueue) {
         notOperatingQueue = false;
-        queue = connect.getMyStudents(employeeId);
+        console.log("Update Queue");
+        connect.getMyStudents(employeeId).then(function(result) {
+            var inner = "";
+            queue = result.data["students"];
+            console.log(queue);
+            if (queue.length > 0) {
+                var student = queue[0];
+                console.log(student);
+                inner +=
+                    "<div> Student: " +  
+                        "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +             
+                        "<button style=\"display: inline-block;\" onclick=\"showStudentProfile('" + student["id"]+ "');\">Profile</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"skipStudent('" + student["id"]+ "');\">Skip</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"doneTalkingStudent('" + student["id"]+ "');\">Done Talking</button>" +
+                    "</div>";
+            }
 
-        var inner = "";
-        if (queue.length > 0) {
-            var student = queue[0];
-            inner +=
-                "<div> Student: " +  
-                    "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +             
-                    "<button style=\"display: inline-block;\" onclick=\"showStudentProfile('" + student["studentId"]+ "');\">Profile</button>" +
-                    "<button style=\"display: inline-block;\" onclick=\"skipStudent('" + student["studentId"]+ "');\">Skip</button>" +
-                    "<button style=\"display: inline-block;\" onclick=\"doneTalkingStudent('" + student["studentId"]+ "');\">Done Talking</button>" +
-                "</div>";
-        }
+            for (i = 1; i < queue.length; i++) {
+                var student = queue[i];
+                inner += 
+                    "<div> Student: " +  
+                        "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +
+                    "</div>";
+            }
 
-        for (i = 1; i < queue.length; i++) {
-            inner += 
-                "<div> Student: " +  
-                    "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +
-                "</div>";
-        }
-
-        document.getElementById("queue").innerHTML = inner;
-        notOperatingQueue = true;
+            document.getElementById("queue").innerHTML = inner;
+            notOperatingQueue = true;
+        });
     }
 }
 
@@ -129,14 +151,21 @@ function showStudentProfile(studentId) {
     document.getElementById("queue_page").style.display = "none";
     document.getElementById("student_profile_page").style.display = "block";
 
-    var student = connect.getStudentProfile(studentId);
-    document.getElementById("student_info").innerHTML = 
-        "<div> Image: " + student["img"] + "</div>" +
-        "<div> Name: " + student["name"] + "</div>" +
-        "<div> University: " + student["university"] + "</div>" +
-        "<div> Major: " + student["major"] + "</div>" +
-        "<div> Graduation Date: " + new Date(student["graduationDate"]) + "</div>" +
-        "<div> Resume: " + student["resume"] + "</div>";
+    connect.getStudentProfile(studentId).then(function(result) {
+        var student = result.student;
+        if (student != null) {
+            document.getElementById("student_info").innerHTML = 
+                "<div> Name: " + student["first_name"] + " " + student["last_name"] + "</div>" +
+                "<div> University: " + student["university_id"] + "</div>" +
+                "<div> Major: " + student["major"] + "</div>" +
+                "<div> Role: " + student["role"] + "</div>" +
+                "<div> GPA: " + student["gpa"] + "</div>" +
+                "<div> Email: " + student["email"] + "</div>" +
+                "<div> Graduation Date: " + new Date(student["grad_date"] * 1000) + "</div>" +
+                "<div> International: " + student["international"] + "</div>" +
+                "<div> Bio: " + student["bio"] + "</div>";
+        }
+    });
 }
 // Create tags
 var innerHTMLTags = "";
@@ -150,9 +179,7 @@ document.getElementById("list_of_tags").innerHTML = innerHTMLTags;
 function skipStudent(studentId) {
     if (notOperatingQueue) {
         notOperatingQueue = false;
-        var result = connect.skipStudent(studentId, employeeId);
-
-        if (result["skipped"]) {
+        connect.skipStudent(studentId, employeeId).then(function(result) {
             queue.shift();
 
             var inner = "";
@@ -161,13 +188,14 @@ function skipStudent(studentId) {
                 inner +=
                     "<div> Student: " +  
                         "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +             
-                        "<button style=\"display: inline-block;\" onclick=\"showStudentProfile('" + student["studentId"]+ "');\">Profile</button>" +
-                        "<button style=\"display: inline-block;\" onclick=\"skipStudent('" + student["studentId"]+ "');\">Skip</button>" +
-                        "<button style=\"display: inline-block;\" onclick=\"doneTalkingStudent('" + student["studentId"]+ "');\">Done Talking</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"showStudentProfile('" + student["id"]+ "');\">Profile</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"skipStudent('" + student["id"]+ "');\">Skip</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"doneTalkingStudent('" + student["id"]+ "');\">Done Talking</button>" +
                     "</div>";
             }
 
             for (i = 1; i < queue.length; i++) {
+                var student = queue[i];
                 inner += 
                     "<div> Student: " +  
                         "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +
@@ -175,8 +203,16 @@ function skipStudent(studentId) {
             }
 
             document.getElementById("queue").innerHTML = inner; 
-        }
-        notOperatingQueue = true;
+
+            // if done talking with all students and the queue has been stopped, return to list_of_fairs page
+            if (queue.length == 0 && queueStopped) {
+                document.getElementById("fair_info_page").style.display = "block";
+                document.getElementById("queue_page").style.display = "none";
+                document.getElementById("stop_queue_desc").innerHTML = 
+                    "<button id=\"stop_queue\">Stop My Queue</button>";
+            }
+            notOperatingQueue = true;
+        });
     } else {
         alert("Operation happened on current queue. Try again.");
     }
@@ -186,20 +222,17 @@ function skipStudent(studentId) {
 function doneTalkingStudent(studentId) {
     if (notOperatingQueue) {
         notOperatingQueue = false;
-        var tags = [];
+        // var tags = [];
 
-        for (i = 0; i < listOfTags.length; i++) {
-            var id = "tag_" + i;
-            console.log(document.getElementById(id).checked);
-            if (document.getElementById(id).checked) {
-                tags.push(listOfTags[i]);
-                document.getElementById(id).checked = false;
-            }
-        }
+        // for (i = 0; i < listOfTags.length; i++) {
+        //     var id = "tag_" + i;
+        //     if (document.getElementById(id).checked) {
+        //         tags.push(listOfTags[i]);
+        //         document.getElementById(id).checked = false;
+        //     }
+        // }
 
-        var result = connect.registerStudent(employeeId, studentId, fairId, tags);
-
-        if (result["registered"]) {
+        connect.registerStudent(employeeId, studentId, "", []).then(function(result) {
             queue.shift();
 
             var inner = "";
@@ -208,13 +241,14 @@ function doneTalkingStudent(studentId) {
                 inner +=
                     "<div> Student: " +  
                         "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +             
-                        "<button style=\"display: inline-block;\" onclick=\"showStudentProfile('" + student["studentId"]+ "');\">Profile</button>" +
-                        "<button style=\"display: inline-block;\" onclick=\"skipStudent('" + student["studentId"]+ "');\">Skip</button>" +
-                        "<button style=\"display: inline-block;\" onclick=\"doneTalkingStudent('" + student["studentId"]+ "');\">Done Talking</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"showStudentProfile('" + student["id"]+ "');\">Profile</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"skipStudent('" + student["id"]+ "');\">Skip</button>" +
+                        "<button style=\"display: inline-block;\" onclick=\"doneTalkingStudent('" + student["id"]+ "');\">Done Talking</button>" +
                     "</div>";
             }
 
             for (i = 1; i < queue.length; i++) {
+                var student = queue[i];
                 inner += 
                     "<div> Student: " +  
                         "<div style=\"display: inline-block;\">" + student["name"] + "</div>" +
@@ -222,17 +256,17 @@ function doneTalkingStudent(studentId) {
             }
 
             document.getElementById("queue").innerHTML = inner;
-        }
 
-        // if done talking with all students and the queue has been stopped, return to list_of_fairs page
-        if (queue.length == 0 && queueStopped) {
-            document.getElementById("fair_info_page").style.display = "block";
-            document.getElementById("queue_page").style.display = "none";
-            document.getElementById("stop_queue_desc").innerHTML = 
-                "<button id=\"stop_queue\">Stop My Queue</button>";
-        }
+            // if done talking with all students and the queue has been stopped, return to list_of_fairs page
+            if (queue.length == 0 && queueStopped) {
+                document.getElementById("fair_info_page").style.display = "block";
+                document.getElementById("queue_page").style.display = "none";
+                document.getElementById("stop_queue_desc").innerHTML = 
+                    "<button id=\"stop_queue\">Stop My Queue</button>";
+            }
 
-        notOperatingQueue = true;
+            notOperatingQueue = true;
+        });
     } else {
         alert("Operation happened on current queue. Try again.");
     }
@@ -328,7 +362,7 @@ function showFairInfoHistory(fairName) {
     var inner = "";
     for (i = 0; i < listOfStudentsHistory.length; i++) {
         var studentName = listOfStudentsHistory[i]["name"];
-        var studentId = listOfStudentsHistory[i]["studentId"];
+        var studentId = listOfStudentsHistory[i]["id"];
         var tags = listOfStudentsHistory[i]["tags"];
 
         var stringTags = "";
@@ -342,7 +376,7 @@ function showFairInfoHistory(fairName) {
         inner += 
             "<div>" + 
                 "<div style=\"display: inline-block;\">" + studentName + "  Tags: " + stringTags + "</div>" +
-                "<button onclick=\"getStudentHistoryProfile('" + studentId + "'                         );\" style=\"display: inline-block;\">Profile</button>" +
+                "<button onclick=\"getStudentHistoryProfile('" + studentId + "');\" style=\"display: inline-block;\">Profile</button>" +
             "</div>";
     }
 
@@ -354,14 +388,22 @@ function getStudentHistoryProfile(studentId) {
     document.getElementById("student_history_profile_page").style.display = "block";
     document.getElementById("student_history_page").style.display = "none";
 
-    var student = connect.getStudentProfile(studentId);
-    document.getElementById("student_history_info").innerHTML = 
-        "<div> Image: " + student["img"] + "</div>" +
-        "<div> Name: " + student["name"] + "</div>" +
-        "<div> University: " + student["university"] + "</div>" +
-        "<div> Major: " + student["major"] + "</div>" +
-        "<div> Graduation Date: " + new Date(student["graduationDate"]) + "</div>" +
-        "<div> Resume: " + student["resume"] + "</div>";
+
+    connect.getStudentProfile(studentId).then(function(result) {
+        var student = result.student;
+        if (student != null) {
+            document.getElementById("student_history_info").innerHTML = 
+                "<div> Name: " + student["first_name"] + " " + student["last_name"] + "</div>" +
+                "<div> University: " + student["university_id"] + "</div>" +
+                "<div> Major: " + student["major"] + "</div>" +
+                "<div> Role: " + student["role"] + "</div>" +
+                "<div> GPA: " + student["gpa"] + "</div>" +
+                "<div> Email: " + student["email"] + "</div>" +
+                "<div> Graduation Date: " + new Date(student["grad_date"] * 1000) + "</div>" +
+                "<div> International: " + student["international"] + "</div>" +
+                "<div> Bio: " + student["bio"] + "</div>";
+        }
+    });
 }
 
 
@@ -388,13 +430,20 @@ document.getElementById("back_to_fairs_e").onclick = function() {
 
 // Back to fair_info page
 document.getElementById("stop_queue").onclick = function() {
-    var result = connect.stopMyQueue(employeeId);
-    if (result["stopped"]) {
+    connect.stopMyQueue(employeeId).then(function() {
         clearInterval(update);
         queueStopped = true;
-        document.getElementById("stop_queue_desc").innerHTML = 
-            "<div>Your queue has been stopped. No more students will join your queue. Returning to list of fairs page after done talking with current students in the queue.</div>";
-    }
+
+        if (queue.length == 0) {
+            document.getElementById("fair_info_page").style.display = "block";
+            document.getElementById("queue_page").style.display = "none";
+            document.getElementById("stop_queue_desc").innerHTML = 
+                "<button id=\"stop_queue\">Stop My Queue</button>";
+        } else {
+            document.getElementById("stop_queue_desc").innerHTML = 
+                "<div>Your queue has been stopped. No more students will join your queue. Returning to list of fairs page after done talking with current students in the queue.</div>";
+        }
+    });
 }
 
 // Back to queue info page
