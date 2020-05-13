@@ -1,4 +1,4 @@
-var domain = "http://ec2-54-201-238-164.us-west-2.compute.amazonaws.com:8080";
+var domain = "http://ec2-52-24-135-0.us-west-2.compute.amazonaws.com:8080";
 
 class Connection {
 

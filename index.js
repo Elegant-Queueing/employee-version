@@ -91,7 +91,7 @@ document.getElementById("employee_profile_button").onclick = function() {
 document.getElementById("add_queue").onclick = function() {
     connect.checkQueueIsOpen(employeeId).then(function(result) {
         console.log(result);
-        if (!result) {
+        if (!result["present"]) {
             console.log("adding queue");
             connect.addMyQueue(employeeId, employeeInfo["company_id"], employeeInfo["role"]).then(function(result) {
                 console.log(result);
