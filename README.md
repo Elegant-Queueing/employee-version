@@ -1,4 +1,4 @@
-# employee-version
+# Q - Employee-version
 This is the repository that manages the front end (web app) of the employee version
 
 ## Current State
@@ -25,14 +25,11 @@ The employee version of Q allows recruiters to view student information and mana
  - (In progress) Click "View History" on profile page to see the career fairs and students the employee has visited
  
  ## Report a Bug
-  - Contact zhang008228@gmail.com with the following information
-  -- Issue:
-  -- How to reproduce the bug:
-  -- Relevecancy of the bug (1 - 5):
+  - Contact zhang008228@gmail.com with the following information: Issue, How to reproduce the bug, Relevecancy of the bug (1 - 5)
   
   # Developer Guide
   ## Layout/Structure
    - HTML: index.html
    - Style: index.css
    - Script: index.js
-   - Backend Connection: backend-connection.js
+   - Backend Connection: backend_connection.js
