@@ -8,7 +8,7 @@ The user can run the web app with pre-populated data.
 ## Description
 The employee version of Q allows recruiters to view student information and manage the queue of students at career fairs. Our app helps reduce the crowding at career fairs and improve the efficiency significantly.
 
-## Run the Web App (beta)
+## Installation, Run & Use the Web App (beta)
  - Clone the repository
  - Open index.html in a browser
  - Login with username: codealot@code.com; no password needed (In progress)
@@ -28,8 +28,17 @@ The employee version of Q allows recruiters to view student information and mana
   - Contact zhang008228@gmail.com with the following information: Issue, How to reproduce the bug, Relevecancy of the bug (1 - 5)
   
   # Developer Guide
+  ## Obtain the Source Code
+   - Backend java sources: https://github.com/Elegant-Queueing/q-backend
+  
   ## Layout/Structure
-   - HTML: index.html
-   - Style: index.css
-   - Script: index.js
-   - Backend Connection: backend_connection.js
+   - index.html: HTML elements and structure of the web app
+   - index.css: Style
+   - index.js: Script for transitioning between pages, processing front-end input, and displaying backend data
+   - backend_connection.js: Script for establishing connection with backend AWS instance and sending HTTP request
+   
+  ## Build the Software
+   - No build system for this web app. Open index.html in a browser to run the application
+  
+  ## Test the Software
+   - Run the web application in a browser to check if the app is behaving as expected
