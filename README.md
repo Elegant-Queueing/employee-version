@@ -26,11 +26,13 @@ The employee version of Q allows recruiters to view student information and mana
  
  ## Report a Bug
   - Contact zhang008228@gmail.com with the following information: Issue, How to reproduce the bug, Relevancy of the bug (1 - 5).
-  - Or raise a well documented GitHub issue with details on how to reproduce the bug.
+  - Or raise a well documented [GitHub issue](https://github.com/Elegant-Queueing/employee-version/issues) with details on how to reproduce the bug, along with the relevant tag.
   
   # Developer Guide
   ## Obtain the Source Code
-   - Backend java sources: https://github.com/Elegant-Queueing/q-backend
+   - To obtain the employer front-end source code, simply clone this repository.
+   - For the backend java sources: https://github.com/Elegant-Queueing/q-backend
+   - For the student application front-end: https://github.com/Elegant-Queueing/student-version
   
   ## Layout/Structure
    - index.html: HTML elements and structure of the web app
@@ -43,4 +45,7 @@ The employee version of Q allows recruiters to view student information and mana
    - No build system for this web app. Open index.html in a browser to run the application
   
   ## Test the Software
-   - Run the web application in a browser to check if the app is behaving as expected
+   - Run the web application in a browser to check if the app is behaving as expected.
+   
+  ## Adding tests 
+   - Currently there is no infrastructure set to add tests to the employer front-end. This section will be updated if and when that is setup.
