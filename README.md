@@ -38,6 +38,7 @@ The employee version of Q allows recruiters to view student information and mana
    - backend_connection.js: Script for establishing connection with backend AWS instance and sending HTTP request
    
   ## Build the Software
+   - Set up an AWS instance as described in the q-backend readme and change the "domain" variable in backend_connection.js to your AWS instance public DNS (ec2-x-x-x-x.us-west-2.compute.amazonaws.com)
    - No build system for this web app. Open index.html in a browser to run the application
   
   ## Test the Software
