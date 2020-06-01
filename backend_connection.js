@@ -1,43 +1,111 @@
 // Public DNS for AWS instance
-var domain = "http://ec2-34-222-19-59.us-west-2.compute.amazonaws.com:8080";
+var domain = "http://ec2-54-218-124-234.us-west-2.compute.amazonaws.com:8080";
+var employeeToken = "";
 
 // Class that establishes connection with backend APIs
 class Connection {
 
     // Handles Employee Login
     login(username, password) {
-        // Test: codealot@code.com
+        return firebase.auth().signInWithEmailAndPassword(username, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorMessage);
+            alert("Authentication failed. Please log in again.");
+            // ...
+        }).then(function() {
+            return firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+                // Send token to your backend via HTTPS
+                // ...
+                employeeToken = idToken;
+                var url = domain + "/employee/get/email/" + username;
+                return $.ajax({
+                    url: url,
+                    type: "GET", 
+                    crossDomain: true,
+                    headers: {
+                        "token": employeeToken
+                    },
+                    statusCode: {
+                        401: function() {
+                            alert("Authentication failed. Please log in again.");
+                            backToLoginPage();
+                        },
+                    },
+                    success: function(result) {
+                        
+                    }
+                });
+            }).catch(function(error) {
+                // Handle error
+                console.log(error);
+            });
+        });
+        
+    }
 
-        var url = domain + "/employee/get/email/" + username;
-        return $.ajax({
-            url: url,
-            type: "GET", 
-            crossDomain: true,
-            success: function(result) {
-                
-            }
+    // Handles Employee Signup
+    createUser(username, password, name, company, role, bio) {
+        return firebase.auth().createUserWithEmailAndPassword(username, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // ...
+        }).then(function() {
+            return firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+                // Send token to your backend via HTTPS
+                // ...
+                var url = domain + "/employee/add";
+                employeeToken = idToken;
+                var employeeData = {"name":name,"company_id":company,"role":role,"bio":bio,"email":username,"students:":""};
+                return $.ajax({
+                    url: url,
+                    type: "POST", 
+                    crossDomain: true,
+                    headers: {
+                        "token": idToken,
+                        "Content-Type": "application/json"
+                    },
+                    statusCode: {
+                        401:function() {
+                            alert("Authentication failed. Please log in again.");
+                            backToLoginPage();
+                        },
+                        400:function() {
+                            alert("Please fill in all fields with the correct format.");
+                        },
+                    },
+                    data: JSON.stringify(employeeData),
+                    success: function(result) {
+                        
+                    }
+                });
+            }).catch(function(error) {
+                // Handle error
+                console.log(error);
+            });
         });
     }
 
     // Returns all career fairs
     getFairs() {
         var url = domain + "/fair/get-all";
-        return $.ajax({url: url, type: "GET", success: function(result) {
-            return result;
-        }});
-    }
-
-    // Checks if given employee has opened a queue or not
-    checkQueueIsOpen(employeeId) {
-        var url = domain + "/queue/data/is-open/employee-id/" + employeeId;
         return $.ajax({
-            url: url, 
+            url: url,
             type: "GET",
-            success: function(result) {
-
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
             },
-            error: function(response) {
-                console.log(response);
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
+            success: function(result) {
+                return result;
             }
         });
     }
@@ -47,7 +115,17 @@ class Connection {
         var url = domain + "/queue/add/company-id/" + companyId + "/employee-id/" + employeeId + "/role/" + role + "/";
         return $.ajax({
             url: url, 
-            type: "POST",
+            method: "POST",
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
             success: function(result) {
 
             },
@@ -60,9 +138,23 @@ class Connection {
     // Returns the profile for the employee
     getEmployeeProfile(employeeId) {
         var url = domain + "/employee/get/employee-id/" + employeeId;
-        return $.ajax({url: url, type: "GET", success: function(result) {
-            return result;
-        }});
+        return $.ajax({
+            url: url,
+            type: "GET",
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
+            success: function(result) {
+                return result;
+            }
+        });
     }
 
     // Updates the employee's profile
@@ -112,6 +204,16 @@ class Connection {
         return $.ajax({
             url: url,
             type: "GET", 
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
             success: function(result) {
                 return result;
             },
@@ -127,6 +229,16 @@ class Connection {
         return $.ajax({
             url: url,
             type: "GET",
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
             success: function(result) {
                 return result;
             },
@@ -142,6 +254,16 @@ class Connection {
         return $.ajax({
             url: url, 
             type: "DELETE", 
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
             success: function(result) {
                 return result;
             },
@@ -157,6 +279,16 @@ class Connection {
         return $.ajax({
             url: url, 
             type: "POST", 
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
             success: function(result) {
                 return result;
             },
@@ -178,6 +310,16 @@ class Connection {
             url: url,
             type: "PUT", 
             crossDomain: true,
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
             success: function(result) {
                 return result;
             },

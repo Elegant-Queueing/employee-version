@@ -13,13 +13,37 @@ var notOperatingQueue = true;
 var queueStopped = false;
 var update;
 
+// Show the list of career fairs
+function showFairs() {
+    // Get and Show Fairs
+    connect.getFairs().then(function(result) {
+        listOfFairs = result.fairs;
+        if (listOfFairs != null) {
+            var innerListOfFairs = "";
+            for (i = 0; i < listOfFairs.length; i++) {
+                var fairName = listOfFairs[i]["name"];
+                innerListOfFairs +=
+                    "<div>" +
+                        "<div style=\"display: inline-block;width: 500px;\">" + fairName + " " + "</div>" +
+                        "<button onclick=\"showFairInfo('" + fairName + "');\">select</button>" +
+                    "</div>";
+            }
+            document.getElementById("fairs").innerHTML = innerListOfFairs;
+        }
+    });
+}
+
 // Transition from login page to list_of_fairs page
 document.getElementById("login").onclick = function() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
 
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+
     connect.login(username, password).then(function(r) {
-        employeeInfo = r.employee;
+        console.log(r);
+        employeeInfo = r;
         if (employeeInfo != null) {
             document.getElementById("login_page").style.display = "none";
             document.getElementById("list_of_fairs_page").style.display = "block";
