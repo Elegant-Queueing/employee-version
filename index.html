@@ -6,26 +6,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     
-    <!-- Title -->
-    <div style="text-align: center;">Q - Employee Version</div>
+    <body>
+        <!-- Title -->
+        <div style="text-align: center; font-family: Impact, Charcoal, sans-serif; font-size: 34px;">Q - Employee Version</div>
 
-    <!-- 1st Page: Login -->
-    <div id="login_page" style="text-align: center">
-        <p></p>
-        <p>Login Page</p>
-        <div>Username <input id="username"></input></div>
-        <div>Password <input id="password"></input></div>
-        <button id="login"> Login </button>
-    </div>
-
-    <!-- 2nd Page: List of Career Fairs -->
-    <div id="list_of_fairs_page">
-        <button id="back_to_login"> Back </button>
-        <button id="employee_profile_button"> Profile </button>
-        
-        <p style="text-align: center;">List of Career Fairs Page</p>
-        <div id="fairs" style="text-align: center">
-            
+        <!-- 1st Page: Login -->
+        <div id="login_page" style="text-align: center">
+            <p></p>
+            <p><b><i>Login</i></b></p>
+            <div><input id="username" placeholder="Email"></input></div>
+            <div><input type="password" id="password" placeholder="Password"></input></div>
+            <button id="login"> Login </button>
+            <button id="signup"> Sign Up</button>
         </div>
     </div>
 
@@ -37,6 +29,19 @@
             <p>Employee Profile Page</p>
             <div id="employee_info">
 
+        <!-- Sign-up -->
+        <div id="signup_page">
+            <button id="back_to_login_signup"> Back </button>
+            <div style="text-align: center;">
+                <p><b><i>Signup</i></b></p>
+                <div><input id="create_username" placeholder="Email (Username)"></input></div>
+                <div><input id="create_password" type="password" placeholder="Password"></input></div>
+                <div><input id="create_name" placeholder="Name"></input></div>
+                <div><input id="create_company" placeholder="Company"></input></div>
+                <div><input id="create_role" placeholder="Role"></input></div>
+                <div><input id="create_bio" placeholder="Bio"></input></div>
+                <p style="font-size:12px">Available Companies: Amazon, Facebook, Microsoft, Google, Apple</p>
+                <button id="submit_signup"> Submit </button>
             </div>
             <button id="edit_employee_profile"> Edit Profile </button>
             <button id="view_history"> View Career Fair History </button>

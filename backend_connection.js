@@ -308,7 +308,7 @@ class Connection {
         var url = domain + "/queue/status/employee-id/" + employeeId;
         return $.ajax({
             url: url,
-            type: "PUT", 
+            method: "PUT", 
             crossDomain: true,
             headers: {
                 "token": employeeToken,

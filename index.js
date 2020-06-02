@@ -51,24 +51,43 @@ document.getElementById("login").onclick = function() {
         } else {
             alert("Login Failed.");
         }
-        document.getElementById("username").value = "";
-        document.getElementById("password").value = "";
 
-        // Get and Show Fairs
-        connect.getFairs().then(function(result) {
-            listOfFairs = result.fairs;
-            if (listOfFairs != null) {
-                var innerListOfFairs = "";
-                for (i = 0; i < listOfFairs.length; i++) {
-                    var fairName = listOfFairs[i]["name"];
-                    innerListOfFairs +=
-                        "<div>" +
-                            "<div style=\"display: inline-block;\">" + fairName + " " + "</div>" +
-                            "<button onclick=\"showFairInfo('" + fairName + "');\">select</button>" +
-                        "</div>";
-                }
-                document.getElementById("fairs").innerHTML = innerListOfFairs;
-            }
+        showFairs();
+    });
+}
+
+// Clear information in the sign up form
+function clearSignupInfo() {
+    document.getElementById("create_username").value = "";
+    document.getElementById("create_password").value = "";
+    document.getElementById("create_name").value = "";
+    document.getElementById("create_bio").value = "";
+    document.getElementById("create_company").value = "";
+    document.getElementById("create_role").value = "";
+}
+
+// Submit sign up information
+document.getElementById("submit_signup").onclick = function() {
+    var username = document.getElementById("create_username").value;
+    var password = document.getElementById("create_password").value;
+    var name = document.getElementById("create_name").value;
+    var bio = document.getElementById("create_bio").value;
+    var company = document.getElementById("create_company").value;
+    var role = document.getElementById("create_role").value;
+
+    if (username == "" || password == "" || name == "" || company == "") {
+        alert("Please fill in all information in the correct format.");
+    } else {
+        connect.createUser(username, password, name, company, role, bio).then(function(result) {
+            clearSignupInfo();
+            console.log(result);
+            employeeInfo = result;
+            // If successful
+            alert("Successfully signed up! Logged in as " + username);
+            document.getElementById("list_of_fairs_page").style.display = "block";
+            document.getElementById("signup_page").style.display = "none";
+
+            showFairs();
         });
     });
 }
@@ -490,4 +509,32 @@ document.getElementById("back_to_fair_history").onclick = function() {
 document.getElementById("back_to_student_history").onclick = function() {
     document.getElementById("student_history_profile_page").style.display = "none";
     document.getElementById("student_history_page").style.display = "block";
+}
+
+// Go to sign up page
+document.getElementById("signup").onclick = function() {
+    document.getElementById("login_page").style.display = "none";
+    document.getElementById("signup_page").style.display = "block";
+}
+
+// Back to login from sign up page
+document.getElementById("back_to_login_signup").onclick = function() {
+    document.getElementById("login_page").style.display = "block";
+    document.getElementById("signup_page").style.display = "none";
+
+    clearSignupInfo();
+}
+
+// Back to login page
+function backToLoginPage() {
+    document.getElementById("list_of_fairs_page").style.display = "none";
+    document.getElementById("fair_info_page").style.display = "none";
+    document.getElementById("employee_profile_page").style.display = "none";
+    document.getElementById("queue_page").style.display = "none";
+    document.getElementById("student_profile_page").style.display = "none";
+    document.getElementById("fairs_history_page").style.display = "none";
+    document.getElementById("student_history_page").style.display = "none";
+    document.getElementById("student_history_profile_page").style.display = "none";
+    
+    document.getElementById("login_page").style.display = "block";
 }
