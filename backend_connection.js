@@ -278,7 +278,7 @@ class Connection {
         var url = domain + "/queue/register-student/employee-id/" + employeeId + "/student-id/" + studentId;
         return $.ajax({
             url: url, 
-            type: "POST", 
+            method: "POST", 
             headers: {
                 "token": employeeToken,
                 "Content-Type": "application/json"

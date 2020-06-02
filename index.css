@@ -37,3 +37,71 @@
 #student_history_profile_page {
     display: none;
 }
+
+
+/* Style */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+p {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+input {
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 15px;
+    outline-width: 0;
+}
+
+button {
+    margin-top: 20px;
+    background-color:#0ba5e2;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.small_button {
+    margin-top: 10px;
+    margin-left: 5px;
+    border-radius: 0px;
+    font-size: 13px;
+    padding: 5px 5px;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.student-entry {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 300px;
+    text-align: left;
+}
