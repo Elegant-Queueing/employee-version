@@ -2,7 +2,9 @@ var connect = new Connection();
 var employeeId = "";
 var listOfFairs = [];
 var fairs;
-// var fairId;
+var fairName;
+var fairId;
+var rawFairId = "1tgJU9lL0kdzrElX7C3Y";
 var employeeInfo;
 var listOfFairsHistory = [];
 var listOfStudentsHistory = [];
@@ -21,11 +23,11 @@ function showFairs() {
         if (listOfFairs != null) {
             var innerListOfFairs = "";
             for (i = 0; i < listOfFairs.length; i++) {
-                var fairName = listOfFairs[i]["name"];
+                var name = listOfFairs[i]["name"];
                 innerListOfFairs +=
                     "<div>" +
-                        "<div style=\"display: inline-block;width: 500px;\">" + fairName + " " + "</div>" +
-                        "<button onclick=\"showFairInfo('" + fairName + "');\">select</button>" +
+                        "<div style=\"display: inline-block;width: 500px;\">" + name + " " + "</div>" +
+                        "<button onclick=\"checkQueue('" + name + "');\">select</button>" +
                     "</div>";
             }
             document.getElementById("fairs").innerHTML = innerListOfFairs;
@@ -45,6 +47,7 @@ document.getElementById("login").onclick = function() {
         console.log(r);
         employeeInfo = r;
         if (employeeInfo != null) {
+            alert("Logged in as " + username);
             document.getElementById("login_page").style.display = "none";
             document.getElementById("list_of_fairs_page").style.display = "block";
             employeeId = employeeInfo["employee_id"];
@@ -82,6 +85,7 @@ document.getElementById("submit_signup").onclick = function() {
             clearSignupInfo();
             console.log(result);
             employeeInfo = result;
+            employeeId = employeeInfo["employee_id"];
             // If successful
             alert("Successfully signed up! Logged in as " + username);
             document.getElementById("list_of_fairs_page").style.display = "block";
@@ -123,14 +127,15 @@ function fairInfoFormat(fair) {
 function checkQueue(name) {
     fairName = name;
     connect.checkQueueIsOpen(employeeId).then(function(result) {
-        document.getElementById("list_of_fairs_page").style.display = "none";
-        document.getElementById("queue_page").style.display = "block";
-        queue = result.data["students"];
-        queueFormat();
-        notOperatingQueue = true;
-        
-        // Pinging the backend every 5 seconds
-        update = setInterval(updateQueue, 5000);
+        if (result) {
+            document.getElementById("list_of_fairs_page").style.display = "none";
+            document.getElementById("queue_page").style.display = "block";
+            // Pinging the backend every 5 seconds
+            updateQueue();
+            update = setInterval(updateQueue, 5000);
+        } else {
+            showFairInfo(name);
+        }
     });
 }
 
@@ -147,31 +152,33 @@ function showFairInfo(name) {
     }
     
     document.getElementById("fair_info").innerHTML = fairInfoFormat(fair);
-    // fairId = fair["fairId"];
+    fairId = fair["fairId"];
 }
 
 // Format the inner html for employee info
 function employeeInfoFormat() {
-    return "<tr>" +
-        "<th>Name</th>" +
-        "<td>" + employeeInfo["name"] + "</td>" +
-    "</tr>" + 
-    "<tr>" +
-        "<th>Company</th>" +
-        "<td>" + employeeInfo["company_id"] + "</td>" +
-    "</tr>" + 
-    "<tr>" +
-        "<th>Role</th>" +
-        "<td>" + employeeInfo["role"] + "</td>" +
-    "</tr>" + 
-    "<tr>" +
-        "<th>Email</th>" +
-        "<td>" + employeeInfo["email"] + "</td>" +
-    "</tr>" + 
-    "<tr>" +
-        "<th>Bio</th>" +
-        "<td>" + employeeInfo["bio"] + "</td>" +
-    "</tr>";
+    return connect.getCompanyName(rawFairId, employeeInfo["company_id"]).then(function(result) {
+        return "<tr>" +
+            "<th>Name</th>" +
+                "<td>" + employeeInfo["name"] + "</td>" +
+            "</tr>" + 
+            "<tr>" +
+                "<th>Company</th>" +
+                "<td>" + result.company["name"] + "</td>" +
+            "</tr>" + 
+            "<tr>" +
+                "<th>Role</th>" +
+                "<td>" + employeeInfo["role"] + "</td>" +
+            "</tr>" + 
+            "<tr>" +
+                "<th>Email</th>" +
+                "<td>" + employeeInfo["email"] + "</td>" +
+            "</tr>" + 
+            "<tr>" +
+                "<th>Bio</th>" +
+                "<td>" + employeeInfo["bio"] + "</td>" +
+            "</tr>";
+    });
 }
 
 // Transition from list_of_fairs page to employee profile page
@@ -180,7 +187,9 @@ document.getElementById("employee_profile_button").onclick = function() {
     document.getElementById("employee_profile_page").style.display = "block";
 
     if (employeeInfo != null) {
-        document.getElementById("employee_info").innerHTML = employeeInfoFormat();
+        employeeInfoFormat().then(function(result) {
+            document.getElementById("employee_info").innerHTML = result;
+        })
     }
 }
 
@@ -203,6 +212,9 @@ document.getElementById("add_queue").onclick = function() {
 // Format the inner html for queue
 function queueFormat() {
     var inner = "";
+    if (queue.length == 0) {
+        document.getElementById("queue_ops").innerHTML = "";
+    }
     if (queue.length > 0) {
         var student = queue[0];
         document.getElementById("queue_ops").innerHTML =         
@@ -213,7 +225,7 @@ function queueFormat() {
 
     for (i = 0; i < queue.length; i++) {
         var student = queue[i];
-        inner += "<div class=\"student-entry\"> Student: " +  student["name"] + "</div>"; 
+        inner += "<div class=\"student-entry\"> &nbsp&nbsp Student: " +  student["name"] + "</div>"; 
     }
 
     document.getElementById("queue").innerHTML = inner;
@@ -261,7 +273,7 @@ function studentInfoFormat(student) {
     "</tr>" +
     "<tr>" +
         "<th>Graduation Date</th>" +
-        "<td>" + new Date(student["grad_date"] * 1000) + "</td>" +
+        "<td>" + new Date(student["grad_date"]["seconds"] * 1000) + "</td>" +
     "</tr>" + 
     "<tr>" +
         "<th>International</th>" +
@@ -278,9 +290,9 @@ function showStudentProfile(studentId) {
     document.getElementById("queue_page").style.display = "none";
     document.getElementById("student_profile_page").style.display = "block";
 
-    connect.getStudentProfile(studentId).then(function(result) {
-        var student = result.student;
+    connect.getStudentProfile(studentId).then(function(student) {
         if (student != null) {
+            console.log(student);
             document.getElementById("student_info").innerHTML = studentInfoFormat(student);
         }
     });
@@ -374,18 +386,19 @@ document.getElementById("submit_employee_profile").onclick = function() {
         newBio = employeeInfo["bio"];
     }
 
-    var result = connect.updateEmployeeProfile(employeeInfo, newName, newEmail, newBio);
-    if (result["updated"]) {
+    connect.updateEmployeeProfile(employeeInfo, newName, newEmail, newBio).then(function(result) {
         employeeInfo["name"] = newName;
         employeeInfo["email"] = newEmail;
         employeeInfo["bio"] = newBio;
 
-        document.getElementById("employee_info").innerHTML = employeeInfoFormat();
+        employeeInfoFormat().then(function(result) {
+            document.getElementById("employee_info").innerHTML = result;
+        })
         
         document.getElementById("new_name").value = "";
         document.getElementById("new_email").value = "";
         document.getElementById("new_bio").value = "";
-    }
+    });
 }
 
 
@@ -420,7 +433,7 @@ function showFairInfoHistory(name) {
     }
 
     document.getElementById("fair_history_info").innerHTML = fairInfoFormat(fair);
-    // var fairHistoryId = fair["fairId"];
+    var fairHistoryId = fair["fairId"];
 
     // Get students for the fair
     listOfStudentsHistory = connect.getPastStudentsForEmployee(employeeId, fairHistoryId);

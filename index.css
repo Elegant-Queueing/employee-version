@@ -99,9 +99,11 @@ tr:nth-child(even) {
 }
 
 .student-entry {
-    border: 1px solid #ccc;
+    border: 1px solid black;
     border-radius: 10px;
     box-sizing: border-box;
-    width: 300px;
+    width: 200px;
     text-align: left;
+    font-size: 14px;
+    margin-bottom: 20px;
 }

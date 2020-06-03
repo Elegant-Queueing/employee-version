@@ -31,6 +31,7 @@ class Connection {
                         401: function() {
                             alert("Authentication failed. Please log in again.");
                             backToLoginPage();
+                            return null;
                         },
                     },
                     success: function(result) {
@@ -79,6 +80,9 @@ class Connection {
                     data: JSON.stringify(employeeData),
                     success: function(result) {
                         
+                    },
+                    error: function(response) {
+                        console.log(response);
                     }
                 });
             }).catch(function(error) {
@@ -135,6 +139,27 @@ class Connection {
         });
     }
 
+    getCompanyName(rawFair, companyId) {
+        var url = domain + "/fair/get/fair-id/" + rawFair + "/company-id/" + companyId;
+        return $.ajax({
+            url: url,
+            type: "GET",
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
+            success: function(result) {
+                return result;
+            }
+        });
+    }
+
     // Returns the profile for the employee
     getEmployeeProfile(employeeId) {
         var url = domain + "/employee/get/employee-id/" + employeeId;
@@ -158,8 +183,32 @@ class Connection {
     }
 
     // Updates the employee's profile
-    updateEmployeeProfile(employeeId, name, email, bio) {
-        return { "updated":true };
+    updateEmployeeProfile(employeeInfo, name, email, bio) {
+        var url = domain + "/employee/update/employee-id/" + employeeInfo["employee_id"];
+        var employeeData = {"name":name,"company_id":employeeInfo["company_id"],"role":employeeInfo["role"],"bio":bio,"email":email,"students:":""};
+        console.log(employeeData)
+        return $.ajax({
+            url: url,
+            method: "PUT", 
+            crossDomain: true,
+            headers: {
+                "token": employeeToken,
+                "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                }
+            },
+            data: JSON.stringify(employeeData),
+            success: function(result) {
+                
+            },
+            error: function(response) {
+                console.log(response);
+            }
+        });
     }
 
     // Returns all career fairs the employee has attended (In Progress)
@@ -207,6 +256,31 @@ class Connection {
             headers: {
                 "token": employeeToken,
                 "Content-Type": "application/json"
+            },
+            statusCode: {
+                401:function() {
+                    alert("Authentication failed. Please log in again.");
+                    backToLoginPage();
+                },
+            },
+            success: function(result) {
+                return result;
+            },
+            error : function(response) {
+                console.log(response);
+            }
+        });
+    }
+
+
+    // Checks if the employee already has a queue
+    checkQueueIsOpen(employeeId) {
+        var url  = domain + "/queue/data/is-open/employee-id/" + employeeId;
+        return $.ajax({
+            url: url,
+            method: "GET",
+            headers: {
+                "token": employeeToken,
             },
             statusCode: {
                 401:function() {
