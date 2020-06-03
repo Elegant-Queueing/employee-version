@@ -11,8 +11,8 @@ The employee version of Q allows recruiters to view student information and mana
  - Open index.html in a browser
 ### Use the Web App
 #### Log In
- - For first time user, click "Sign Up"; fill in all fields with the correct format and click submit
- - For returning user, log in with username and password
+ - For first time users, click "Sign Up"; fill in all fields with the correct format and click submit
+ - For returning users, log in with username and password
 #### Employee Profile
  - Click "Profile" to see the employee's information
  - Click "Edit Profile" on profile page to update the employee's information
@@ -29,7 +29,7 @@ The employee version of Q allows recruiters to view student information and mana
  
  
  ## Report a Bug
-  - Contact zhang008228@gmail.com with the following information: Issue, How to reproduce the bug, Relevancy of the bug (1 - 5).
+  - Contact zhang008228@gmail.com with the following information: Issue, Picture of the bug, How to reproduce the bug, Relevancy of the bug (1 - 5).
   - Or raise a well documented [GitHub issue](https://github.com/Elegant-Queueing/employee-version/issues) with details on how to reproduce the bug, along with the relevant tag.
   
   # Developer Guide
