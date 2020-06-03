@@ -1,28 +1,32 @@
 # Q - Employee-version
 This is the repository that manages the front end (web app) of the employee version
 
-## Current State
-The user can run the web app with pre-populated data.
-
 # User Guide
 ## Description
 The employee version of Q allows recruiters to view student information and manage the queue of students at career fairs. Our app helps reduce the crowding at career fairs and improve the efficiency significantly.
 
-## Installation, Run & Use the Web App (beta)
+## Installation, Run & Use the Web App
+### Installation & Run
  - Clone the repository
  - Open index.html in a browser
- - Login with username: codealot@code.com; no password needed (In progress)
+### Use the Web App
+#### Log In
+ - For first time user, click "Sign Up"; fill in all fields with the correct format and click submit
+ - For returning user, log in with username and password
+#### Employee Profile
+ - Click "Profile" to see the employee's information
+ - Click "Edit Profile" on profile page to update the employee's information
+ - (In progress) Click "View History" on profile page to see the career fairs and students the employee has visited
+#### Join a Career Fair and Start Queue
  - Select the career fair the employee is attending
  - Click "Add My Queue" to instantiate the employee's queue
  - Information of students will show up as students join the employee's queue on student version of the app
- - Click "profile" to see the student's information
+ - Click "Profile" to see the student's information
  - (In progress) Click on tags to add tags for the student
  - If student doesn't show up, click "Skip" to remove him/her
- - After finishing the conversation, click "Done talking" to remove him/her
- - When about to leave the career fair, click "Stop Queue"
- - Click "Profile" to see the employee's information
- - (In progress) Click "Edit" on profile page to update the employee's information
- - (In progress) Click "View History" on profile page to see the career fairs and students the employee has visited
+ - After finishing the conversation, click "Done Talking" to remove him/her
+ - When about to leave the career fair, click "Stop Queue"; will returning to the career fair information after finishing talking with all students in the current queue
+ 
  
  ## Report a Bug
   - Contact zhang008228@gmail.com with the following information: Issue, How to reproduce the bug, Relevancy of the bug (1 - 5).
